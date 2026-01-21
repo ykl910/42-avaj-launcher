@@ -60,9 +60,9 @@ class JetPlane
 +void updateConditions()
 }
 
-class Baloon
+class Balloon
 {
-+Baloon(long p_id, string p_name, Coordinates p_coordinate)
++Balloon(long p_id, string p_name, Coordinates p_coordinate)
 +void updateConditions()
 }
 
@@ -77,7 +77,7 @@ Coordinates -* Aircraft
 Flyable <|.. Aircraft 
 Aircraft <|-- Helicopter
 Aircraft <|-- JetPlane
-Aircraft <|-- Baloon
+Aircraft <|-- Balloon
 
 JetPlane -[hidden]- AircraftFactory
 WeatherTower -[hidden]- WeatherProvider
