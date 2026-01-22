@@ -48,7 +48,8 @@ public class Main {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.out.println("Error: Unknown file");
 		}
 
 		for(int i = 0; i < nbChange; i++) {
