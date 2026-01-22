@@ -21,8 +21,8 @@ public class Main {
 		String filename = args[0];
 		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
 			String firstLine = br.readLine();
-			if (firstLine == null) {
-				System.err.println("Empty file");
+			if (firstLine == null || firstLine.trim().isEmpty()) {
+				System.err.println("Empty first line");
 				return;
 			}
 			nbChange = Integer.parseInt(firstLine.trim());
@@ -31,7 +31,7 @@ public class Main {
 				if (line.trim().isEmpty()) continue;
 				String[] parts = line.split(" ");
 				if (parts.length != 5) {
-					System.err.println("Invalid line: " + line);
+					System.err.println("Error: Invalid line: " + line);
 					continue;
 				}
 				String type = parts[0];
@@ -40,8 +40,12 @@ public class Main {
 				int lat = Integer.parseInt(parts[3]);
 				int hei = Integer.parseInt(parts[4]);
 				Coordinates coor = new Coordinates(lon, lat, hei);
-				Flyable f = af.newAircraft(type, name, coor);
-				f.registerTower(wt);
+				try {
+					Flyable f = af.newAircraft(type, name, coor);
+					f.registerTower(wt);					
+				} catch (IllegalArgumentException e) {
+					System.out.println("Error: Unknown type");
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
