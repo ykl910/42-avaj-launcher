@@ -5,6 +5,7 @@ import flyables.Balloon;
 import flyables.JetPlane;
 import flyables.Flyable;
 import utils.Coordinates;
+import utils.InvalidTypeException;
 
 public class AircraftFactory {
 	
@@ -27,6 +28,6 @@ public class AircraftFactory {
 		if (p_type.equals("Balloon")) {
 			return new Balloon(id, p_name, p_coordinate);
 		}
-		throw new IllegalArgumentException("Unknown type");
+		throw new InvalidTypeException("Unknown aircraft: " + p_type);
 	}
 }

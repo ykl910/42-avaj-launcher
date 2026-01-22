@@ -2,23 +2,23 @@ package app;
 
 import utils.WeatherProvider;
 import utils.Coordinates;
+import utils.InvalidTypeException;
 import aircraft.AircraftFactory;
 import tower.WeatherTower;
 import flyables.Flyable;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 
 public class Main {
 	
-	public static void main(String[] args) {
-		
+	private static void run(String filename) {
 		WeatherProvider wp = WeatherProvider.getInstance();
 		AircraftFactory af = AircraftFactory.getInstance();
 		WeatherTower wt = new WeatherTower();
 		int nbChange = 0;
 
-		String filename = args[0];
 		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
 			String firstLine = br.readLine();
 			if (firstLine == null || firstLine.trim().isEmpty()) {
@@ -32,7 +32,7 @@ public class Main {
 				String[] parts = line.split(" ");
 				if (parts.length != 5) {
 					System.err.println("Error: Invalid line: " + line);
-					continue;
+					return;
 				}
 				String type = parts[0];
 				String name = parts[1];
@@ -43,19 +43,32 @@ public class Main {
 				try {
 					Flyable f = af.newAircraft(type, name, coor);
 					f.registerTower(wt);					
-				} catch (IllegalArgumentException e) {
-					System.out.println("Error: Unknown type");
+				} catch (InvalidTypeException e) {
+					System.err.println("Error: " + e.getMessage());
 				}
 			}
 		} catch (IOException e) {
-			// e.printStackTrace();
-			System.out.println("Error: Unknown file");
+			System.err.println("Error: Unknown file");
 		}
-
 		for(int i = 0; i < nbChange; i++) {
 			wt.changeWeather();
-		}		
+		}	
 	}
 
+	public static void main(String[] args) {
+		if (args.length != 	1) {
+			System.out.println("only one parameter allowed");
+			return;
+		} 
+		try {
+			PrintStream fileOut = new PrintStream("simulation.txt");
+			System.setOut(fileOut);
+			run(args[0]);
+			fileOut.close();
+		}
+		catch (Exception e) {
+			System.err.println("Error: cannot create output file");
+		}
+	}
 }
 

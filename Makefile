@@ -2,6 +2,7 @@ SRC_DIR := src
 BIN_DIR := bin
 MAIN_CLASS := app.Main
 INPUT_FILE := docs/scenario.txt
+OUTPUT_FILE := simulation.txt
 
 # Find all Java source files
 SOURCES := $(shell find $(SRC_DIR) -name "*.java")
@@ -25,4 +26,6 @@ run:
 clean:
 	@echo "Cleaning compiled classes..."
 	rm -rf $(BIN_DIR)
+	rm $(OUTPUT_FILE)
+
 	@echo "Clean finished."
