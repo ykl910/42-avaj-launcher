@@ -3,6 +3,7 @@ package app;
 import utils.WeatherProvider;
 import utils.Coordinates;
 import utils.InvalidTypeException;
+import utils.InvalidCoorException;
 import aircraft.AircraftFactory;
 import tower.WeatherTower;
 import flyables.Flyable;
@@ -36,15 +37,30 @@ public class Main {
 				}
 				String type = parts[0];
 				String name = parts[1];
-				int lon = Integer.parseInt(parts[2]);
-				int lat = Integer.parseInt(parts[3]);
-				int hei = Integer.parseInt(parts[4]);
-				Coordinates coor = new Coordinates(lon, lat, hei);
+				int lon = 0;
+				int lat = 0;
+				int hei = 0;
+				try {
+					lon = Integer.parseInt(parts[2]);
+					lat = Integer.parseInt(parts[3]);
+					hei = Integer.parseInt(parts[4]);					
+				} catch (NumberFormatException e) {
+					System.err.println("Error: Invalid numer found");
+					return;
+				}
+				Coordinates coor;
+				try {
+					coor = new Coordinates(lon, lat, hei);
+				} catch (InvalidCoorException e) {
+					System.err.println("Error: " + e.getMessage());
+					return;
+				}
 				try {
 					Flyable f = af.newAircraft(type, name, coor);
 					f.registerTower(wt);					
 				} catch (InvalidTypeException e) {
 					System.err.println("Error: " + e.getMessage());
+					return;
 				}
 			}
 		} catch (IOException e) {
@@ -57,7 +73,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		if (args.length != 	1) {
-			System.out.println("only one parameter allowed");
+			System.err.println("only one parameter allowed");
 			return;
 		} 
 		try {
@@ -67,7 +83,7 @@ public class Main {
 			fileOut.close();
 		}
 		catch (Exception e) {
-			System.err.println("Error: cannot create output file");
+			e.printStackTrace();
 		}
 	}
 }
